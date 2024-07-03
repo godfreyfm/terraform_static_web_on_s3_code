@@ -35,13 +35,29 @@ jobs:
       - name: Terraform validate
         run: terraform validate
       - name: Terraform plan
-        run: terraform plan -out=plan.out
+        run: |
+          terraform plan -out=plan.out 2>&1 | tee plan.log
+          echo "### Terraform Plan Output" >> $GITHUB_STEP_SUMMARY
+          cat plan.log >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Plan Log
+        uses: actions/upload-artifact@v2
+        with:
+          name: plan-log
+          path: plan.log
+
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: |
           echo "### Terraform - Creating Resources Output" >> $GITHUB_STEP_SUMMARY
           terraform apply -auto-approve plan.out 2>&1 | tee apply.log
           cat apply.log >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Apply Log
+        uses: actions/upload-artifact@v2
+        with:
+          name: apply-log
+          path: apply.log
 
   terraform-destroy:
     name: "Terraform - Destroying Resources"
@@ -70,3 +86,9 @@ jobs:
           echo "### Terraform - Destroying Resources Output" >> $GITHUB_STEP_SUMMARY
           terraform destroy -auto-approve 2>&1 | tee destroy.log
           cat destroy.log >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Destroy Log
+        uses: actions/upload-artifact@v2
+        with:
+          name: destroy-log
+          path: destroy.log

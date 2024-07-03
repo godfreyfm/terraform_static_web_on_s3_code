@@ -5,10 +5,17 @@ on:
     branches:
       - "main" #Focus on the main branch
   pull_request:
+  workflow_dispatch:
+    inputs:
+      destroy:
+        description: "Set to true to run terraform destroy"
+        required: false
+        default: "false"
 jobs:
   terraform:
-    name: "Terraform"
+    name: "Terraform - Creating Resources"
     runs-on: ubuntu-latest #Runner. Severless
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
 
     steps:
       - name: Checkout code/ Download code
@@ -32,11 +39,16 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve plan.out
+      - name: Terraform Apply
+        if: always()
+        run: |
+          echo "### Terraform Apply Output for creation" >> $GITHUB_STEP_SUMMARY
+          cat apply.log >> $GITHUB_STEP_SUMMARY
 
   terraform-destroy:
-    name: "Terraform Destroy"
+    name: "Terraform - Destroying Resources"
     runs-on: ubuntu-latest #Runner. Severless
-
+    if: github.event.inputs.destroy == 'true'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -54,3 +66,6 @@ jobs:
         run: terraform init
       - name: Terraform Destroy
         run: terraform destroy -auto-approve
+      - name: Add Terraform Destroy to Summary
+        if: always()
+        run: echo "### Terraform Destroy Output" >> $GITHUB_STEP_SUMMARY && terraform destroy -auto-approve 2>&1 | tee destroy.log && cat destroy.log >> $GITHUB_STEP_SUMMARY

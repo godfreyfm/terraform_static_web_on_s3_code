@@ -38,11 +38,9 @@ jobs:
         run: terraform plan -out=plan.out
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve plan.out
-      - name: Terraform Apply
-        if: always()
         run: |
-          echo "### Terraform Apply Output for creation" >> $GITHUB_STEP_SUMMARY
+          echo "### Terraform - Creating Resources Output" >> $GITHUB_STEP_SUMMARY
+          terraform apply -auto-approve plan.out 2>&1 | tee apply.log
           cat apply.log >> $GITHUB_STEP_SUMMARY
 
   terraform-destroy:
@@ -68,4 +66,7 @@ jobs:
         run: terraform destroy -auto-approve
       - name: Add Terraform Destroy to Summary
         if: always()
-        run: echo "### Terraform Destroy Output" >> $GITHUB_STEP_SUMMARY && terraform destroy -auto-approve 2>&1 | tee destroy.log && cat destroy.log >> $GITHUB_STEP_SUMMARY
+        run: |
+          echo "### Terraform - Destroying Resources Output" >> $GITHUB_STEP_SUMMARY
+          terraform destroy -auto-approve 2>&1 | tee destroy.log
+          cat destroy.log >> $GITHUB_STEP_SUMMARY

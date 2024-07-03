@@ -7,15 +7,19 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
-      destroy:
-        description: "Set to true to run terraform destroy"
-        required: false
-        default: "false"
+      action:
+        description: "Choose the action to run"
+        required: true
+        default: "apply"
+        type: choice
+        options:
+          - apply
+          - destroy
 jobs:
   terraform:
     name: "Terraform - Creating Resources"
     runs-on: ubuntu-latest #Runner. Severless
-    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    if: github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.action == 'apply'
 
     steps:
       - name: Checkout code/ Download code
@@ -41,7 +45,7 @@ jobs:
           cat plan.log >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Plan Log
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: plan-log
           path: plan.log
@@ -54,7 +58,7 @@ jobs:
           cat apply.log >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Apply Log
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: apply-log
           path: apply.log
@@ -62,7 +66,7 @@ jobs:
   terraform-destroy:
     name: "Terraform - Destroying Resources"
     runs-on: ubuntu-latest #Runner. Severless
-    if: github.event.inputs.destroy == 'true'
+    if: github.event.inputs.action == 'destroy'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -88,7 +92,7 @@ jobs:
           cat destroy.log >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Destroy Log
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: destroy-log
           path: destroy.log

@@ -3,7 +3,7 @@ resource "aws_s3_object" "index_html" {
   key          = "index.html"
   source       = "index.html"
   content_type = "text/html"
-  etag         = filemd5("./index.html")
+  etag         = filemd5("../static_site/index.html")
 }
 
 resource "aws_s3_object" "error_html" {
@@ -11,7 +11,7 @@ resource "aws_s3_object" "error_html" {
   key          = "error.html"
   source       = "error.html"
   content_type = "text/html"
-  etag         = filemd5("./error.html")
+  etag         = filemd5("../static_site/error.html")
 }
 
 resource "aws_s3_object" "main_styles_css" {
@@ -19,7 +19,7 @@ resource "aws_s3_object" "main_styles_css" {
   key          = "main_styles.css"
   source       = "main_styles.css"
   content_type = "text/css"
-  etag         = filemd5("./main_styles.css")
+  etag         = filemd5("../static_site/main_styles.css")
 }
 
 resource "aws_s3_object" "error_styles_css" {
@@ -27,5 +27,5 @@ resource "aws_s3_object" "error_styles_css" {
   key          = "error_styles.css"
   source       = "error_styles.css"
   content_type = "text/css"
-  etag         = filemd5("./error_styles.css")
+  etag         = filemd5("../static_site/error_styles.css")
 }

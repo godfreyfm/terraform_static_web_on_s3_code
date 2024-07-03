@@ -1,10 +1,8 @@
 resource "aws_s3_bucket" "bucket_a" {
-  bucket = "gmai-bucket-1"
+  bucket = "s3-hosted-static-site"
 
-  tags = {
-    Name        = "gmai_bucket_1"
-    Environment = "Dev"
-  }
+  tags = merge(var.global_tags, 
+  {Name = "s3-hosted-static-site"} )
 }
 
 

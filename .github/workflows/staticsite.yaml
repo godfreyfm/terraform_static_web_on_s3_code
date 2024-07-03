@@ -28,7 +28,9 @@ jobs:
       - name: Terraform validate
         run: terraform validate
       - name: Terraform plan
-        run: terraform plan -out=plan.out
+        # run: terraform plan -out=plan.out
+        run: terraform plan
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve plan.out
+        # run: terraform apply -auto-approve plan.out
+        run: terraform apply

@@ -19,7 +19,7 @@ jobs:
   terraform:
     name: "Terraform - Creating Resources"
     runs-on: ubuntu-latest #Runner. Severless
-    if: github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.action == 'apply'
+    if: github.event.inputs.action == 'apply'
 
     steps:
       - name: Checkout code/ Download code

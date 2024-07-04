@@ -10,7 +10,7 @@ on:
       action:
         description: "Choose the action to run"
         required: true
-        default: "destroy"
+        default: "apply"
         type: choice
         options:
           - apply

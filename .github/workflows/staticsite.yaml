@@ -19,7 +19,7 @@ jobs:
   terraform:
     name: "Terraform - Creating Resources"
     runs-on: ubuntu-latest #Runner. Severless
-    if: github.event.inputs.action == 'apply'
+    if: ${{github.event.inputs.action == 'apply'}}
 
     steps:
       - name: Checkout code/ Download code
@@ -66,7 +66,7 @@ jobs:
   terraform-destroy:
     name: "Terraform - Destroying Resources"
     runs-on: ubuntu-latest #Runner. Severless
-    if: github.event.inputs.action == 'destroy'
+    if: ${{github.event.inputs.action == 'destroy'}}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
